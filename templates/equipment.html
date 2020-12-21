@@ -1,0 +1,46 @@
+{% extends 'base2.html' %}
+
+{% load index %}
+
+{% block content %}
+
+<div class="col">
+    <form action="{% url 'target' %}" method="POST">
+        {% csrf_token %}
+        <h3 class="d-flex justify-content-center align-items-center my-2">Vs:
+            <input type="text" class="form-control mx-2" placeholder="{{ ac }}" name="ac" value="{{ ac }}" style="width: 3rem;"></input>
+            AC
+        </h3> 
+    </form>
+
+    <div class="card-group">  
+        {% for c in char_list %}          
+        <div class="card">
+            {% if use_feat_list|index:forloop.counter0 %}
+            <a class="btn btn-success ml-auto" role="button" href="{% url 'feat' forloop.counter0 %}">{{ feat_name_list|index:forloop.counter0 }}</a>
+            {% else %}
+            <a class="btn btn-warning ml-auto" role="button" href="{% url 'feat' forloop.counter0 %}">{{ feat_name_list|index:forloop.counter0 }}</a>
+            {% endif %}
+            <div class="card-body p-0">
+                <ul class="table-responsive pl-0">
+                    <table class="table">
+                        <tbody> 
+                            {% with curr_list_items=list_items|index:forloop.counter0 %}
+                            {% for k,v in curr_list_items.items %}                               
+                            <tr>
+                                <td class="text-uppercase table-primary font-weight-bold w-25">{{k}}</td>
+                                <td class="table-secondary align-middle">{{v}}</td>
+                            </tr>
+                            {% endfor %}
+                            {% endwith %}
+                        </tbody>
+                    </table>                        
+                </ul>
+            </div>
+        </div>  
+        {% endfor %}          
+    </div>
+    
+</div>
+
+{% endblock %}
