@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'Equipment',
+    'Equipment.apps.EquipmentConfig',
 ]
 
 MIDDLEWARE = [
@@ -55,7 +55,9 @@ ROOT_URLCONF = 'AO_Django.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -119,3 +121,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+AO_BIN_UTILS_DIR = "E:\\GitHub_Repos\\ao-bin-dumps\\"
+
+import sys
+sys.path.insert(0, AO_BIN_UTILS_DIR)

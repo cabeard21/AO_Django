@@ -4,10 +4,28 @@ from django.db import models
 class EquipmentSet(models.Model):
 
     set_name = models.CharField(max_length=100, unique=True)
-    items = models.ManyToManyField('ItemTier')    
+    items = models.ManyToManyField('ItemTier')
+    target_ip = models.IntegerField(default=0)
+    character = models.ForeignKey('Character', on_delete=models.DO_NOTHING, null=True)
 
     def __str__(self):
         return self.set_name
+
+    def get_items(self):
+        return [item.item.item_name for item in self.items.all()]
+
+    def get_min_tiers(self):
+        return [item.min_tier for item in self.items.all()]
+
+    def get_mastery(self):
+        res = []
+        for item in self.items.all():
+            res.append(self.character.get_spec(item.item.item_type.item_type))
+
+        if len(res) == 0:
+            res = [0*len(self.items)]
+
+        return res
 
 
 class ItemTier(models.Model):
@@ -36,6 +54,15 @@ class Character(models.Model):
 
     def __str__(self):
         return self.char_name
+
+    def get_spec(self, item_type):
+        for spec in self.mastery.all():
+            if spec.item_type.item_type == item_type:
+                return spec.spec_bonus
+
+        return 0
+
+        # return self.mastery.get(item_type__item_type=item_type).spec_bonus
 
 
 class ItemTypeSpec(models.Model):

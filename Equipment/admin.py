@@ -6,9 +6,24 @@ from .models import *
 class EquipmentSetAdmin(admin.ModelAdmin):
     filter_horizontal = ('items',)
 
-admin.site.register(ItemTier)
-admin.site.register(Character)
-admin.site.register(ItemTypeSpec)
+@admin.register(ItemTier)
+class ItemTierAdmin(admin.ModelAdmin):
+    autocomplete_fields = ['item']
 
-admin.site.register(Item)
-admin.site.register(ItemType)
+@admin.register(Character)
+class CharacterAdmin(admin.ModelAdmin):
+    filter_horizontal = ('mastery',)
+
+@admin.register(ItemTypeSpec)
+class ItemTypeSpecAdmin(admin.ModelAdmin):
+    autocomplete_fields = ['item_type']
+
+@admin.register(Item)
+class ItemAdmin(admin.ModelAdmin):
+    ordering = ['item_name']
+    search_fields = ['item_name']
+
+@admin.register(ItemType)
+class ItemTypeAdmin(admin.ModelAdmin):
+    ordering = ['item_type']
+    search_fields = ['item_type']
