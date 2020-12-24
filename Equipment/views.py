@@ -10,6 +10,9 @@ def list_efficient_items(request):
     equipment_sets = EquipmentSet.objects.all()
 
     equipment_set_list = []
+    equipment_set_names = []
+    equipment_set_ips = []
+    equipment_set_costs = []
     abd = AoBinData()
     for equipment_set in equipment_sets:
         target_ip = equipment_set.target_ip
@@ -25,12 +28,23 @@ def list_efficient_items(request):
         )
 
         efficient_set = efficient_set_tool.get_calculation()
-        efficient_set['enchant_lvls'] = [int(x.split('@')[-1]) if '@' in x else 0 for x in efficient_set['item_names']]
+        # Format output (maybe this should be a decorator?)
+        efficient_set['tiers'] = list(map(lambda x: abd.get_item_tier(x), efficient_set['item_names']))
         efficient_set['item_names'] =  list(map(lambda x: abd.get_local_name(x), efficient_set['item_names']))
-        efficient_set['prices'] = list(map(lambda x: f"{float(x):,.2f}", efficient_set['prices']))
+        total_cost = f"{sum(efficient_set['prices']):,.0f}"
+        efficient_set['prices'] = list(map(lambda x: f"{float(x):,.0f}", efficient_set['prices']))
+        efficient_set['qualities'] = list(map(lambda x: abd.get_quality_name(x), efficient_set['qualities']))
 
         equipment_set_list.append(efficient_set)
 
+        # Set Meta data
+        equipment_set_names.append(equipment_set.set_name)
+        equipment_set_ips.append(equipment_set.target_ip)
+        equipment_set_costs.append(total_cost)
+
     return render(request, 'equipment.html', {
         'equipment_set_list': equipment_set_list,
+        'equipment_set_names': equipment_set_names,
+        'equipment_set_ips': equipment_set_ips,
+        'equipment_set_costs': equipment_set_costs,
     })
