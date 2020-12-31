@@ -23,8 +23,8 @@ def list_efficient_items(request):
         equipment_set_ips = session_data[2]
         equipment_set_costs = session_data[3]
 
-    else:
-        for equipment_set in equipment_sets:
+    for equipment_set in equipment_sets:
+        if equipment_set.set_name not in equipment_set_names:
             abd = AoBinData()
             target_ip = equipment_set.target_ip
             item_list = list(map(lambda x: abd.get_unique_name(x), equipment_set.get_items()))
@@ -40,9 +40,7 @@ def list_efficient_items(request):
                 # )
             )
 
-            start_time = time.time()
             efficient_set = efficient_set_tool.get_calculation()
-            print(f"{time.time() - start_time} seconds")
             # Format output (maybe this should be a decorator?)
             efficient_set['tiers'] = list(map(lambda x: abd.get_item_tier(x), efficient_set['item_names']))
             efficient_set['item_names'] =  list(map(lambda x: abd.get_local_name(x), efficient_set['item_names']))
@@ -57,12 +55,12 @@ def list_efficient_items(request):
             equipment_set_ips.append(equipment_set.target_ip)
             equipment_set_costs.append(total_cost)
 
-        request.session['efficient_items'] = (
-            equipment_set_list,
-            equipment_set_names,
-            equipment_set_ips,
-            equipment_set_costs,
-        )
+    request.session['efficient_items'] = (
+        equipment_set_list,
+        equipment_set_names,
+        equipment_set_ips,
+        equipment_set_costs,
+    )
 
     return render(request, 'equipment.html', {
         'equipment_set_list': equipment_set_list,

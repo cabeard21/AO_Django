@@ -126,3 +126,5 @@ AO_BIN_UTILS_DIR = "E:\\GitHub_Repos\\ao-bin-dumps\\"
 
 import sys
 sys.path.insert(0, AO_BIN_UTILS_DIR)
+
+SESSION_COOKIE_AGE = 15 * 60  # 15 minutes to ensure fresh data
