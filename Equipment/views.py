@@ -55,12 +55,13 @@ def list_efficient_items(request):
             equipment_set_ips.append(equipment_set.target_ip)
             equipment_set_costs.append(total_cost)
 
-    request.session['efficient_items'] = (
-        equipment_set_list,
-        equipment_set_names,
-        equipment_set_ips,
-        equipment_set_costs,
-    )
+            # This 'modifies' the session, resetting the age of the session.
+            request.session['efficient_items'] = (
+                equipment_set_list,
+                equipment_set_names,
+                equipment_set_ips,
+                equipment_set_costs,
+            )
 
     return render(request, 'equipment.html', {
         'equipment_set_list': equipment_set_list,
