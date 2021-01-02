@@ -5,7 +5,6 @@ class EquipmentSet(models.Model):
 
     set_name = models.CharField(max_length=100, unique=True)
     items = models.ManyToManyField('ItemTier')
-    target_ip = models.IntegerField(default=0)
     character = models.ForeignKey('Character', on_delete=models.DO_NOTHING, null=True)
 
     def __str__(self):
@@ -16,6 +15,9 @@ class EquipmentSet(models.Model):
 
     def get_min_tiers(self):
         return [item.min_tier for item in self.items.all()]
+
+    def get_target_ips(self):
+        return [item.target_ip for item in self.items.all()]
 
     def get_mastery(self):
         res = []
@@ -31,9 +33,14 @@ class EquipmentSet(models.Model):
 class ItemTier(models.Model):
     item = models.ForeignKey('Item', on_delete=models.DO_NOTHING, related_name='itemtier_item')
     min_tier = models.IntegerField(default=4, verbose_name='Minimum Tier')
+    target_ip = models.IntegerField(
+        default=0,
+        verbose_name='Target IP',
+        help_text='0 for cheapest, -1 for highest IP/Cost'
+    )
 
     def __str__(self):
-        return f"{self.item} > {self.min_tier}"
+        return f"{self.item} > {self.min_tier} > {self.target_ip}"
 
 
 # Fixture
