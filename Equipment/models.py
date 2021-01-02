@@ -36,7 +36,7 @@ class ItemTier(models.Model):
     target_ip = models.IntegerField(
         default=0,
         verbose_name='Target IP',
-        help_text='0 for cheapest, -1 for highest IP/Cost'
+        help_text='Positive for cheapest, negative for highest IP/Cost'
     )
 
     def __str__(self):
