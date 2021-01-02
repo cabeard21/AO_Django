@@ -5,6 +5,10 @@ from .models import *
 from ao_bin_utils.ao_bin_data import AoBinData
 import ao_bin_utils.ao_bin_tools as aot
 
+from ao_bin_utils.my_thread import (
+    MyThread, work_queue, queue_lock, set_exit_flag
+)
+
 import time
 
 def list_efficient_items(request):
@@ -15,11 +19,35 @@ def list_efficient_items(request):
     equipment_set_names = []
     equipment_set_costs = []
 
+    set_exit_flag(0)
+
+    threads = []
+    result_list = []
+    for i in range(len(equipment_sets)):
+        thread = MyThread(
+            lambda x: efficient_items_process(x), work_queue, result_list
+        )
+        thread.start()
+        threads.append(thread)
+
+    queue_lock.acquire()
     for equipment_set in equipment_sets:
-       esl, esn, esc = efficient_items_process(equipment_set)
-       equipment_set_list.append(esl)
-       equipment_set_names.append(esn)
-       equipment_set_costs.append(esc)
+       work_queue.put(equipment_set)
+
+    queue_lock.release()
+
+    while not work_queue.empty():
+        pass
+
+    set_exit_flag(1)
+
+    for t in threads:
+        t.join()
+
+    for thread_res in result_list:
+        equipment_set_list.append(thread_res[0])
+        equipment_set_names.append(thread_res[1])
+        equipment_set_costs.append(thread_res[2])
 
     return render(request, 'equipment.html', {
         'equipment_set_list': equipment_set_list,
@@ -39,9 +67,9 @@ def efficient_items_process(equipment_set):
 
     # Perform calculation
     efficient_set_tool = aot.AoBinTools(
-            aot.EfficientItemPower(
-                target_ip, item_list, mastery, min_tiers, location
-            )
+        aot.EfficientItemPower(
+            target_ip, item_list, mastery, min_tiers, location
+        )
     )
 
     efficient_set = efficient_set_tool.get_calculation()
@@ -63,4 +91,4 @@ def efficient_items_process(equipment_set):
         'target_ip': efficient_set['target_ip'],
     }
 
-    return ordered_efficient_set, equipment_set.set_name, total_cost
+    return (ordered_efficient_set, equipment_set.set_name, total_cost)
