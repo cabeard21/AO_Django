@@ -5,7 +5,7 @@ class EquipmentSet(models.Model):
 
     set_name = models.CharField(max_length=100, unique=True)
     items = models.ManyToManyField('ItemTier')
-    character = models.ForeignKey('Character', on_delete=models.DO_NOTHING, null=True)
+    character = models.ForeignKey('Character', on_delete=models.DO_NOTHING, null=True, blank=True)
 
     def __str__(self):
         return self.set_name
@@ -20,12 +20,12 @@ class EquipmentSet(models.Model):
         return [item.target_ip for item in self.items.all()]
 
     def get_mastery(self):
+        if self.character is None:
+            return [0 for i in range(len(self.items.all()))]
+
         res = []
         for item in self.items.all():
             res.append(self.character.get_spec(item.item.item_type.item_type))
-
-        if len(res) == 0:
-            res = [0*len(self.items)]
 
         return res
 
