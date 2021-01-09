@@ -4,44 +4,41 @@
 
 {% block content %}
 
-<div class="col">
-    <div class="card-group">  
-        {% for equipment_set in equipment_set_list %}          
-        <div class="card flex-fill">
-            <div class="container mt-5" data-toggle="collapse" data-target="#cardCollapse_{{forloop.counter0}}" aria-expanded="false" aria-controls="cardCollapse_{{forloop.counter0}}">
-                <div class="col">
-                    <h4>{{ equipment_set_names|index:forloop.counter0 }}</h4>
+<div class="row">
+    <div class="col">
+        <div class="card-group">  
+            {% for equipment_set in equipment_set_list %}
+            <div class="card flex-fill">
+                <div class="container mt-5" data-toggle="collapse" data-target="#cardCollapse_{{forloop.counter0}}" aria-expanded="false" aria-controls="cardCollapse_{{forloop.counter0}}">
+                    <div class="col">
+                        <h4>{{ equipment_set_names|index:forloop.counter0 }}</h4>
+                    </div>
                 </div>
-                <div class="col">
-                    <ul class="list-unstyled d-flex justify-content-between">
-                    </ul>
-                </div>
-            </div>
 
-            <div class="card-body p-0 flex-column collapse" id="cardCollapse_{{forloop.counter0}}">
-                <h4 class="card-title"></h4>
-                <ul class="table-responsive pl-0">
-                    <table class="table">
-                        <tbody> 
-                            {% for k, v in equipment_set.items %}                            
-                            <tr>
-                                <td class="text-uppercase table-primary font-weight-bold w-25">{{ k }}</td>
-                                {% for list_value in v %}
-                                <td class="table-secondary align-middle">{{ list_value }}</td>
+                <div class="card-body p-0 flex-column collapse" id="cardCollapse_{{forloop.counter0}}">
+                    <div class="table-responsive pl-0">
+                        <table class="table">
+                            <tbody> 
+                                {% for k, v in equipment_set.items %}
+                                <tr>
+                                    <td class="text-uppercase table-primary font-weight-bold w-25">{{ k }}</td>
+                                    {% for list_value in v %}
+                                    <td class="table-secondary align-middle">{{ list_value }}</td>
+                                    {% endfor %}
+                                </tr>
                                 {% endfor %}
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>                        
-                </ul>
-                <div class="card-footer">
-                    <span>Cost: {{ equipment_set_costs|index:forloop.counter0 }}</span>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer">
+                        <span>Cost: {{ equipment_set_costs|index:forloop.counter0 }}</span>
+                    </div>
                 </div>
-            </div>
-        </div>  
-        {% endfor %}          
+            </div>  
+            {% endfor %}
+        </div>
+        
     </div>
-    
 </div>
 
 {% endblock %}

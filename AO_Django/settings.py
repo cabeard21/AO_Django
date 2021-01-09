@@ -122,6 +122,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+
 AO_BIN_UTILS_DIR = "E:\\GitHub_Repos\\ao-bin-dumps\\"
 
 import sys

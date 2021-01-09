@@ -16,10 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from Equipment import views
+from AO_Django import views as ao
+from Equipment import views as eq
 
 urlpatterns = [
+    path('', ao.menu, name='menu'),
     path('admin/', admin.site.urls),
-    path('', views.list_efficient_items, name='list_efficient_items'),
-
+    path('efficient/', eq.list_efficient_items, name='list_efficient_items'),
 ]
