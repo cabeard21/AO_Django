@@ -34,13 +34,13 @@
         {% block content %}
         {% endblock %}
 
-    </div>
-
-    {% block scripts %}
-    {% endblock %}
+    </div> <!--container-->
 
     <script src="{% static 'assets/js/jquery.min.js' %}"></script>
     <script src="{% static 'assets/bootstrap/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'assets/js/bs-init.js' %}"></script>
+
+    {% block scripts %}
+    {% endblock %}
 </body>
 </html>
