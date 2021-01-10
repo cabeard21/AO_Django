@@ -41,4 +41,18 @@
     </div>
 </div>
 
+{% include 'loading_modal.html' %}
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+    $(document).ready(function() {
+        window.onbeforeunload = function(e) {
+            $('#loading_modal').modal('show');
+        }
+    });
+</script>
+
 {% endblock %}
