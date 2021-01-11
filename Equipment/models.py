@@ -25,7 +25,7 @@ class EquipmentSet(models.Model):
 
         res = []
         for item in self.items.all():
-            res.append(self.character.get_spec(item.item.item_type.item_type))
+            res.append(self.character.get_spec(item.item.item_name))
 
         return res
 
@@ -47,7 +47,6 @@ class ItemTier(models.Model):
 class Item(models.Model):
 
     item_name = models.CharField(max_length=50)
-    tier = models.IntegerField(default=4)
     item_type = models.ForeignKey('ItemType', on_delete=models.DO_NOTHING, related_name='item_itemtype')
 
     def __str__(self):
@@ -57,14 +56,14 @@ class Item(models.Model):
 class Character(models.Model):
 
     char_name = models.CharField(max_length=100, unique=True)
-    mastery = models.ManyToManyField('ItemTypeSpec')
+    mastery = models.ManyToManyField('ItemSpec')
 
     def __str__(self):
         return self.char_name
 
-    def get_spec(self, item_type):
+    def get_spec(self, item_name):
         for spec in self.mastery.all():
-            if spec.item_type.item_type == item_type:
+            if spec.item.item_name == item_name:
                 return spec.spec_bonus
 
         return 0
@@ -72,13 +71,13 @@ class Character(models.Model):
         # return self.mastery.get(item_type__item_type=item_type).spec_bonus
 
 
-class ItemTypeSpec(models.Model):
+class ItemSpec(models.Model):
 
-    item_type = models.ForeignKey('ItemType', on_delete=models.DO_NOTHING, related_name='itemtypespec_itemtype')
+    item = models.ForeignKey('Item', on_delete=models.DO_NOTHING, related_name='itemspec_item')
     spec_bonus = models.IntegerField(default=0)
 
     def __str__(self):
-        return f"{self.item_type}: {self.spec_bonus}"
+        return f"{self.item}: {self.spec_bonus}"
 
 
 # Fixture

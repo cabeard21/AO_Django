@@ -14,9 +14,9 @@ class ItemTierAdmin(admin.ModelAdmin):
 class CharacterAdmin(admin.ModelAdmin):
     filter_horizontal = ('mastery',)
 
-@admin.register(ItemTypeSpec)
-class ItemTypeSpecAdmin(admin.ModelAdmin):
-    autocomplete_fields = ['item_type']
+@admin.register(ItemSpec)
+class ItemSpecAdmin(admin.ModelAdmin):
+    autocomplete_fields = ['item']
 
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):
