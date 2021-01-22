@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import F
 
 
 class EquipmentSet(models.Model):
@@ -42,6 +43,9 @@ class ItemTier(models.Model):
     def __str__(self):
         return f"{self.item} > {self.min_tier} > {self.target_ip}"
 
+    class Meta:
+        ordering = [F("item__item_name")]
+
 
 # Fixture
 class Item(models.Model):
@@ -78,6 +82,9 @@ class ItemSpec(models.Model):
 
     def __str__(self):
         return f"{self.item}: {self.spec_bonus}"
+
+    class Meta:
+        ordering = [F("item__item_name")]
 
 
 # Fixture

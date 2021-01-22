@@ -13,6 +13,9 @@
                     <div class="col">
                         <h4>{{ equipment_set_names|index:forloop.counter0 }}</h4>
                     </div>
+                    <ul class="list-group list-group-horizontal mb-1">
+                        <li class="list-group-item">{{ equipment_set_chars|index:forloop.counter0 }}</li>
+                    </ul>
                 </div>
 
                 <div class="card-body p-0 flex-column collapse" id="cardCollapse_{{forloop.counter0}}">

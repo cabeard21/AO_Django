@@ -18,6 +18,7 @@ def list_efficient_items(request):
     equipment_set_list = []
     equipment_set_names = []
     equipment_set_costs = []
+    equipment_set_chars = []
 
     set_exit_flag(0)
 
@@ -48,11 +49,13 @@ def list_efficient_items(request):
         equipment_set_list.append(thread_res[0])
         equipment_set_names.append(thread_res[1])
         equipment_set_costs.append(thread_res[2])
+        equipment_set_chars.append(thread_res[3])
 
     return render(request, 'equipment.html', {
         'equipment_set_list': equipment_set_list,
         'equipment_set_names': equipment_set_names,
         'equipment_set_costs': equipment_set_costs,
+        'equipment_set_chars': equipment_set_chars,
     })
 
 
@@ -91,4 +94,4 @@ def efficient_items_process(equipment_set):
         'target_ip': efficient_set['target_ip'],
     }
 
-    return (ordered_efficient_set, equipment_set.set_name, total_cost)
+    return (ordered_efficient_set, equipment_set.set_name, total_cost, equipment_set.character)
