@@ -23,4 +23,5 @@ urlpatterns = [
     path('', ao.menu, name='menu'),
     path('admin/', admin.site.urls),
     path('efficient/', eq.list_efficient_items, name='list_efficient_items'),
+    path('efficient/<int:id>', eq.list_efficient_items, name='list_efficient_items_individual'),
 ]

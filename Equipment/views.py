@@ -11,7 +11,7 @@ from ao_bin_utils.my_thread import (
 
 import time
 
-def list_efficient_items(request):
+def list_efficient_items(request, id=None):
 
     equipment_sets = EquipmentSet.objects.all()
 
@@ -19,17 +19,29 @@ def list_efficient_items(request):
     equipment_set_names = []
     equipment_set_costs = []
     equipment_set_chars = []
+    equipment_set_ids = []
 
     # Check for set in cache
     equipment_sets_evaluated = []
     for equipment_set in equipment_sets:
-        result = LoadEfficientItemResult(equipment_set)
-        if result and result[1].seconds/60 < 15: # Only refresh if older than 15 minutes
-            equipment_set_list.append(result[0][0])
-            equipment_set_names.append(result[0][1])
-            equipment_set_costs.append(result[0][2])
-            equipment_set_chars.append(result[0][3])
+        if id and equipment_set.id == id:
+            # Force refresh
+            eval_current_set = True
         else:
+            eval_current_set = False
+
+        if not eval_current_set:
+            result = LoadEfficientItemResult(equipment_set)
+            if result and result[1].seconds/60 < 60: # Only refresh if older than given minutes
+                equipment_set_list.append(result[0][0])
+                equipment_set_names.append(result[0][1])
+                equipment_set_costs.append(result[0][2])
+                equipment_set_chars.append(result[0][3])
+                equipment_set_ids.append(equipment_set.id)
+            else:
+                eval_current_set = True
+
+        if eval_current_set:
             equipment_sets_evaluated.append(equipment_set)
 
     # Evaluate remaining sets
@@ -64,29 +76,37 @@ def list_efficient_items(request):
             equipment_set_names.append(thread_res[1])
             equipment_set_costs.append(thread_res[2])
             equipment_set_chars.append(thread_res[3])
+            equipment_set_ids.append(thread_res[4])
 
             SaveEfficientItemResult(thread_res)
 
     # Sorty by set name?
     sorted_tuples = sorted(
-                        zip(equipment_set_list, equipment_set_names, equipment_set_costs, equipment_set_chars),
+                        zip(equipment_set_list,
+                            equipment_set_names,
+                            equipment_set_costs,
+                            equipment_set_chars,
+                            equipment_set_ids),
                         key=lambda x: x[1]
                         )
     equipment_set_list = []
     equipment_set_names = []
     equipment_set_costs = []
     equipment_set_chars = []
+    equipment_set_ids = []
     for tup in sorted_tuples:
         equipment_set_list.append(tup[0])
         equipment_set_names.append(tup[1])
         equipment_set_costs.append(tup[2])
         equipment_set_chars.append(tup[3])
+        equipment_set_ids.append(tup[4])
 
     return render(request, 'equipment.html', {
         'equipment_set_list': equipment_set_list,
         'equipment_set_names': equipment_set_names,
         'equipment_set_costs': equipment_set_costs,
         'equipment_set_chars': equipment_set_chars,
+        'equipment_set_ids': equipment_set_ids,
     })
 
 
@@ -158,4 +178,4 @@ def efficient_items_process(equipment_set):
         'target_ip': efficient_set['target_ip'],
     }
 
-    return (ordered_efficient_set, equipment_set.set_name, total_cost, equipment_set.character)
+    return (ordered_efficient_set, equipment_set.set_name, total_cost, equipment_set.character, equipment_set.id)

@@ -23,7 +23,9 @@
                             </ul>
                         </div>
                         <div class="col-auto m-auto">
-                            <button type="button" class="btn btn-info">Refresh</button>
+                            <a href="{% url 'list_efficient_items_individual' id=equipment_set_ids|index:forloop.counter0 %}">
+                                <button type="button" class="btn btn-info">Refresh</button>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -44,7 +46,7 @@
                         </table>
                     </div>
                     <div class="card-footer">
-                        <span>Cost: {{ equipment_set_costs|index:forloop.counter0 }}</span>
+                        {% comment %} <span>Cost: {{ equipment_set_costs|index:forloop.counter0 }}</span> {% endcomment %}
                     </div>
                 </div>
             </div>  
