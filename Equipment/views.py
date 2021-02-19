@@ -67,6 +67,21 @@ def list_efficient_items(request):
 
             SaveEfficientItemResult(thread_res)
 
+    # Sorty by set name?
+    sorted_tuples = sorted(
+                        zip(equipment_set_list, equipment_set_names, equipment_set_costs, equipment_set_chars),
+                        key=lambda x: x[1]
+                        )
+    equipment_set_list = []
+    equipment_set_names = []
+    equipment_set_costs = []
+    equipment_set_chars = []
+    for tup in sorted_tuples:
+        equipment_set_list.append(tup[0])
+        equipment_set_names.append(tup[1])
+        equipment_set_costs.append(tup[2])
+        equipment_set_chars.append(tup[3])
+
     return render(request, 'equipment.html', {
         'equipment_set_list': equipment_set_list,
         'equipment_set_names': equipment_set_names,
