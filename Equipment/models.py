@@ -1,5 +1,7 @@
 from django.db import models
 from django.db.models import F
+import datetime
+from django.utils.timezone import utc
 
 
 class EquipmentSet(models.Model):
@@ -94,3 +96,18 @@ class ItemType(models.Model):
 
     def __str__(self):
         return self.item_type
+
+
+# Results Caching
+class EfficientItemResult(models.Model):
+    ordered_efficient_set = models.TextField()
+    equipment_set_name = models.CharField(max_length=100)
+    total_cost = models.CharField(max_length=50)
+    equipment_set_character = models.CharField(max_length=100)
+
+    time_saved = models.DateTimeField(auto_now=True)
+
+    def get_age(self):
+        now = datetime.datetime.utcnow().replace(tzinfo=utc)
+        time_diff = now - self.time_saved
+        return time_diff

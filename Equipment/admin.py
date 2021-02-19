@@ -27,3 +27,7 @@ class ItemAdmin(admin.ModelAdmin):
 class ItemTypeAdmin(admin.ModelAdmin):
     ordering = ['item_type']
     search_fields = ['item_type']
+
+@admin.register(EfficientItemResult)
+class EfficientItemResultAdmin(admin.ModelAdmin):
+    readonly_fields = ['time_saved']

@@ -6,16 +6,26 @@
 
 <div class="row">
     <div class="col">
-        <div class="card-group">  
+        <div class="card-group flex-column">  
             {% for equipment_set in equipment_set_list %}
-            <div class="card flex-fill">
+            <div class="card d-inline-block">
                 <div class="container mt-5" data-toggle="collapse" data-target="#cardCollapse_{{forloop.counter0}}" aria-expanded="false" aria-controls="cardCollapse_{{forloop.counter0}}">
-                    <div class="col">
-                        <h4>{{ equipment_set_names|index:forloop.counter0 }}</h4>
+                    <div class="row">
+                        <div class="col">
+                            <h4>{{ equipment_set_names|index:forloop.counter0 }}</h4>
+                        </div>
                     </div>
-                    <ul class="list-group list-group-horizontal mb-1">
-                        <li class="list-group-item">{{ equipment_set_chars|index:forloop.counter0 }}</li>
-                    </ul>
+                    <div class="row">
+                        <div class="col">
+                            <ul class="list-group list-group-horizontal mb-1">
+                                <li class="list-group-item border-0">{{ equipment_set_chars|index:forloop.counter0 }}</li>
+                                <li class="list-group-item border-0"><span>{{ equipment_set_costs|index:forloop.counter0 }}</span></li>
+                            </ul>
+                        </div>
+                        <div class="col-auto m-auto">
+                            <button type="button" class="btn btn-info">Refresh</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="card-body p-0 flex-column collapse" id="cardCollapse_{{forloop.counter0}}">
