@@ -126,7 +126,7 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
-AO_BIN_UTILS_DIR = "E:\\GitHub_Repos\\ao-bin-dumps\\"
+AO_BIN_UTILS_DIR = "..\\ao-bin-dumps\\"
 
 import sys
 sys.path.insert(0, AO_BIN_UTILS_DIR)
