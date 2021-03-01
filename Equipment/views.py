@@ -72,6 +72,16 @@ def list_efficient_items(request, id=None):
             t.join()
 
         for thread_res in result_list:
+            if len(thread_res[5]) > 0:
+                # There were failed items, try to use cached results
+                result = LoadEfficientItemResult(equipment_set)
+                if result:
+                    equipment_set_list.append(result[0][0])
+                    equipment_set_names.append(result[0][1])
+                    equipment_set_costs.append(result[0][2])
+                    equipment_set_chars.append(result[0][3])
+                    equipment_set_ids.append(equipment_set.id)
+
             equipment_set_list.append(thread_res[0])
             equipment_set_names.append(thread_res[1])
             equipment_set_costs.append(thread_res[2])
@@ -160,6 +170,10 @@ def efficient_items_process(equipment_set):
     )
 
     efficient_set = efficient_set_tool.get_calculation()
+    failed_item_indexes = []
+    for i, x in enumerate(efficient_set['prices']):
+        if x == 0:
+            failed_item_indexes.append(i)
 
     # Format output (maybe this should be a decorator?)
     efficient_set['tiers'] = list(map(lambda x: abd.get_item_tier(x), efficient_set['item_names']))
@@ -178,4 +192,9 @@ def efficient_items_process(equipment_set):
         'target_ip': efficient_set['target_ip'],
     }
 
-    return (ordered_efficient_set, equipment_set.set_name, total_cost, equipment_set.character, equipment_set.id)
+    return (ordered_efficient_set,
+            equipment_set.set_name,
+            total_cost,
+            equipment_set.character,
+            equipment_set.id,
+            failed_item_indexes)
