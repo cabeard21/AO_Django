@@ -171,18 +171,20 @@ def efficient_items_process(equipment_set):
 
     efficient_set = efficient_set_tool.get_calculation()
     # Sort by price (This should probably be in the get_calculation method?)
-    sorted_set = sorted(zip(efficient_set['item_names'], efficient_set['item_powers'], efficient_set['prices'], efficient_set['qualities']), key=lambda x: -x[2])
+    sorted_set = sorted(zip(efficient_set['item_names'], efficient_set['item_powers'], efficient_set['prices'], efficient_set['qualities'], target_ip), key=lambda x: -x[2])
     efficient_set = {
         'item_names': [],
         'qualities': [],
         'item_powers': [],
         'prices': [],
     }
-    for name, ip, price, quality in sorted_set:
+    target_ip = []
+    for name, ip, price, quality, tar_ip in sorted_set:
         efficient_set['item_names'].append(name)
         efficient_set['qualities'].append(quality)
         efficient_set['item_powers'].append(ip)
         efficient_set['prices'].append(price)
+        target_ip.append(tar_ip)
 
     # Find failed items
     failed_item_indexes = []
