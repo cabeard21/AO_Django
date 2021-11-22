@@ -8,7 +8,8 @@ class EquipmentSet(models.Model):
 
     set_name = models.CharField(max_length=100, unique=True)
     items = models.ManyToManyField('ItemTier')
-    character = models.ForeignKey('Character', on_delete=models.DO_NOTHING, null=True, blank=True)
+    character = models.ForeignKey(
+        'Character', on_delete=models.DO_NOTHING, null=True, blank=True)
 
     def __str__(self):
         return self.set_name
@@ -34,7 +35,8 @@ class EquipmentSet(models.Model):
 
 
 class ItemTier(models.Model):
-    item = models.ForeignKey('Item', on_delete=models.DO_NOTHING, related_name='itemtier_item')
+    item = models.ForeignKey(
+        'Item', on_delete=models.DO_NOTHING, related_name='itemtier_item')
     min_tier = models.IntegerField(default=4, verbose_name='Minimum Tier')
     target_ip = models.IntegerField(
         default=0,
@@ -53,7 +55,8 @@ class ItemTier(models.Model):
 class Item(models.Model):
 
     item_name = models.CharField(max_length=50)
-    item_type = models.ForeignKey('ItemType', on_delete=models.DO_NOTHING, related_name='item_itemtype')
+    item_type = models.ForeignKey(
+        'ItemType', on_delete=models.DO_NOTHING, related_name='item_itemtype')
 
     def __str__(self):
         return self.item_name
@@ -79,7 +82,8 @@ class Character(models.Model):
 
 class ItemSpec(models.Model):
 
-    item = models.ForeignKey('Item', on_delete=models.DO_NOTHING, related_name='itemspec_item')
+    item = models.ForeignKey(
+        'Item', on_delete=models.DO_NOTHING, related_name='itemspec_item')
     spec_bonus = models.IntegerField(default=0)
 
     def __str__(self):
@@ -111,3 +115,8 @@ class EfficientItemResult(models.Model):
         now = datetime.datetime.utcnow().replace(tzinfo=utc)
         time_diff = now - self.time_saved
         return time_diff
+
+
+# Market Location
+class Market(models.Model):
+    market = models.CharField(max_length=50)

@@ -2,6 +2,22 @@
 
 {% load index %}
 
+{% block navbar_content %}
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
+      {{market}}
+    </a>
+    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <a class="dropdown-item {% if market == 'Bridgewatch' %}active{% endif %}" href="{% url 'list_efficient_items_market' market='Bridgewatch' %}">Bridgewatch</a>
+        <a class="dropdown-item {% if market == 'Caerleon' %}active{% endif %}" href="{% url 'list_efficient_items_market' market='Caerleon' %}">Caerleon</a>
+        <a class="dropdown-item {% if market == 'Fort Sterling' %}active{% endif %}" href="{% url 'list_efficient_items_market' market='Fort Sterling' %}">Fort Sterling</a>
+        <a class="dropdown-item {% if market == 'Lymhurst' %}active{% endif %}" href="{% url 'list_efficient_items_market' market='Lymhurst' %}">Lymhurst</a>
+        <a class="dropdown-item {% if market == 'Martlock' %}active{% endif %}" href="{% url 'list_efficient_items_market' market='Martlock' %}">Martlock</a>
+        <a class="dropdown-item {% if market == 'Thetford' %}active{% endif %}" href="{% url 'list_efficient_items_market' market='Thetford' %}">Thetford</a>
+    </div>
+  </li>
+{% endblock %}
+
 {% block content %}
 
 <div class="row">
@@ -23,7 +39,7 @@
                             </ul>
                         </div>
                         <div class="col-auto m-auto">
-                            <a href="{% url 'list_efficient_items_individual' id=equipment_set_ids|index:forloop.counter0 %}">
+                            <a href="{% url 'list_efficient_items_individual' id=equipment_set_ids|index:forloop.counter0 market=market%}">
                                 <button type="button" class="btn btn-info">Refresh</button>
                             </a>
                         </div>

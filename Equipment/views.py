@@ -9,9 +9,16 @@ from ao_bin_utils.my_thread import (
     MyThread, work_queue, queue_lock, set_exit_flag
 )
 
-import time
 
-def list_efficient_items(request, id=None):
+def list_efficient_items(request, id=None, market: str = None):
+
+    if not market:
+        try:
+            market = Market.objects.first().market
+        except:
+            market = 'Caerleon'
+
+    SaveMarket(market)
 
     equipment_sets = EquipmentSet.objects.all()
 
@@ -32,7 +39,8 @@ def list_efficient_items(request, id=None):
 
         if not eval_current_set:
             result = LoadEfficientItemResult(equipment_set)
-            if result and result[1].seconds/60 < 60: # Only refresh if older than given minutes
+            # Only refresh if older than given minutes
+            if result and result[1].seconds/60 < 60:
                 equipment_set_list.append(result[0][0])
                 equipment_set_names.append(result[0][1])
                 equipment_set_costs.append(result[0][2])
@@ -52,7 +60,8 @@ def list_efficient_items(request, id=None):
         result_list = []
         for i in range(len(equipment_sets_evaluated)):
             thread = MyThread(
-                lambda x: efficient_items_process(x), work_queue, result_list
+                lambda x: efficient_items_process(
+                    x, market), work_queue, result_list
             )
             thread.start()
             threads.append(thread)
@@ -92,13 +101,13 @@ def list_efficient_items(request, id=None):
 
     # Sorty by set name?
     sorted_tuples = sorted(
-                        zip(equipment_set_list,
-                            equipment_set_names,
-                            equipment_set_costs,
-                            equipment_set_chars,
-                            equipment_set_ids),
-                        key=lambda x: x[1]
-                        )
+        zip(equipment_set_list,
+            equipment_set_names,
+            equipment_set_costs,
+            equipment_set_chars,
+            equipment_set_ids),
+        key=lambda x: x[1]
+    )
     equipment_set_list = []
     equipment_set_names = []
     equipment_set_costs = []
@@ -117,6 +126,7 @@ def list_efficient_items(request, id=None):
         'equipment_set_costs': equipment_set_costs,
         'equipment_set_chars': equipment_set_chars,
         'equipment_set_ids': equipment_set_ids,
+        'market': market
     })
 
 
@@ -124,20 +134,31 @@ def LoadEfficientItemResult(equipment_set):
     for result in EfficientItemResult.objects.all():
         if result.equipment_set_name == equipment_set.set_name:
             try:
-                equipment_char = Character.objects.get(char_name=result.equipment_set_character)
+                equipment_char = Character.objects.get(
+                    char_name=result.equipment_set_character)
             except:
                 equipment_char = None
 
             return (
-                    (eval(result.ordered_efficient_set),
-                    result.equipment_set_name,
-                    result.total_cost,
-                    equipment_char),
+                (eval(result.ordered_efficient_set),
+                 result.equipment_set_name,
+                 result.total_cost,
+                 equipment_char),
 
-                    result.get_age()
-                    ) # (tuple of result[0-3], age)
+                result.get_age()
+            )  # (tuple of result[0-3], age)
 
     return None
+
+
+def SaveMarket(market: str):
+    m = Market.objects.first()
+
+    if not m:
+        m = Market.objects.create()
+
+    m.market = market
+    m.save()
 
 
 def SaveEfficientItemResult(result):
@@ -153,14 +174,15 @@ def SaveEfficientItemResult(result):
     eir.save()
 
 
-def efficient_items_process(equipment_set):
-     # Get input variables
+def efficient_items_process(equipment_set, location: str):
+    # Get input variables
     abd = AoBinData()
     target_ip = equipment_set.get_target_ips()
-    item_list = list(map(lambda x: abd.get_unique_name(x), equipment_set.get_items()))
+    item_list = list(map(lambda x: abd.get_unique_name(x),
+                     equipment_set.get_items()))
     mastery = equipment_set.get_mastery()
     min_tiers = equipment_set.get_min_tiers()
-    location = 'Lymhurst'
+    # location = 'Lymhurst'
 
     # Perform calculation
     efficient_set_tool = aot.AoBinTools(
@@ -171,7 +193,8 @@ def efficient_items_process(equipment_set):
 
     efficient_set = efficient_set_tool.get_calculation()
     # Sort by price (This should probably be in the get_calculation method?)
-    sorted_set = sorted(zip(efficient_set['item_names'], efficient_set['item_powers'], efficient_set['prices'], efficient_set['qualities'], target_ip), key=lambda x: -x[2])
+    sorted_set = sorted(zip(efficient_set['item_names'], efficient_set['item_powers'],
+                        efficient_set['prices'], efficient_set['qualities'], target_ip), key=lambda x: -x[2])
     efficient_set = {
         'item_names': [],
         'qualities': [],
@@ -193,14 +216,18 @@ def efficient_items_process(equipment_set):
             failed_item_indexes.append(i)
 
     # Format output (maybe this should be a decorator?)
-    efficient_set['tiers'] = list(map(lambda x: abd.get_item_tier(x), efficient_set['item_names']))
-    efficient_set['item_names'] =  list(map(lambda x: abd.get_local_name(x), efficient_set['item_names']))
+    efficient_set['tiers'] = list(
+        map(lambda x: abd.get_item_tier(x), efficient_set['item_names']))
+    efficient_set['item_names'] = list(
+        map(lambda x: abd.get_local_name(x), efficient_set['item_names']))
     total_cost = f"{sum(efficient_set['prices']):,.0f}"
-    efficient_set['prices'] = list(map(lambda x: f"{float(x):,.0f}", efficient_set['prices']))
-    efficient_set['qualities'] = list(map(lambda x: abd.get_quality_name(x), efficient_set['qualities']))
+    efficient_set['prices'] = list(
+        map(lambda x: f"{float(x):,.0f}", efficient_set['prices']))
+    efficient_set['qualities'] = list(
+        map(lambda x: abd.get_quality_name(x), efficient_set['qualities']))
     efficient_set['target_ip'] = target_ip
 
-    ordered_efficient_set= {
+    ordered_efficient_set = {
         'item_names': efficient_set['item_names'],
         'tiers': efficient_set['tiers'],
         'qualities': efficient_set['qualities'],

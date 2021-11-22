@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
+import sys
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -25,9 +26,9 @@ SECRET_KEY = 'bv2qvn(+m!8*3v)w#1ho7hu#&d66z!i8i3n-n0)dt&((2sd$tq'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*',]
+ALLOWED_HOSTS = ['*', ]
 
-DEFAULT_AUTO_FIELD='django.db.models.AutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 # Application definition
 
@@ -132,7 +133,6 @@ STATICFILES_DIRS = (
 
 AO_BIN_UTILS_DIR = os.path.join("..", "ao-bin-dumps")
 
-import sys
 sys.path.insert(0, AO_BIN_UTILS_DIR)
 
 # SESSION_COOKIE_AGE = 15 * 60  # 15 minutes to ensure fresh data

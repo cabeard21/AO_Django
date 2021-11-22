@@ -22,6 +22,10 @@ from Equipment import views as eq
 urlpatterns = [
     path('', ao.menu, name='menu'),
     path('admin/', admin.site.urls),
-    path('efficient/', eq.list_efficient_items, name='list_efficient_items'),
-    path('efficient/<int:id>', eq.list_efficient_items, name='list_efficient_items_individual'),
+    path('efficient/', eq.list_efficient_items,
+         name='list_efficient_items'),
+    path('efficient/<str:market>', eq.list_efficient_items,
+         name='list_efficient_items_market'),
+    path('efficient/<int:id>/<str:market>', eq.list_efficient_items,
+         name='list_efficient_items_individual'),
 ]
