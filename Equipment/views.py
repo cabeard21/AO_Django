@@ -18,7 +18,7 @@ def list_efficient_items(request, id=None, market: str = None):
         except:
             market = 'Caerleon'
 
-    SaveMarket(market)
+    market_changed = SaveMarket(market)
 
     equipment_sets = EquipmentSet.objects.all()
 
@@ -31,7 +31,7 @@ def list_efficient_items(request, id=None, market: str = None):
     # Check for set in cache
     equipment_sets_evaluated = []
     for equipment_set in equipment_sets:
-        if id and equipment_set.id == id:
+        if id and equipment_set.id == id or market_changed:
             # Force refresh
             eval_current_set = True
         else:
@@ -151,14 +151,18 @@ def LoadEfficientItemResult(equipment_set):
     return None
 
 
-def SaveMarket(market: str):
+def SaveMarket(market: str) -> bool:
     m = Market.objects.first()
 
     if not m:
         m = Market.objects.create()
 
+    result = True if m.market != market else False
+
     m.market = market
     m.save()
+
+    return result
 
 
 def SaveEfficientItemResult(result):
