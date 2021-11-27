@@ -65,7 +65,7 @@ class Item(models.Model):
 class Character(models.Model):
 
     char_name = models.CharField(max_length=100, unique=True)
-    mastery = models.ManyToManyField('ItemSpec')
+    mastery = models.ManyToManyField('ItemSpec', blank=True)
 
     def __str__(self):
         return self.char_name
