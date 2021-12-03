@@ -1,13 +1,15 @@
+import ao_bin_utils.ao_bin_tools as aot
+from ao_bin_utils.ao_bin_data import AoBinData
+from ao_bin_utils.my_thread import (MyThread, queue_lock, set_exit_flag,
+                                    work_queue)
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.parsers import JSONParser
+
+from .serializers import ExcludedItemSerializer
 
 from .models import *
-
-from ao_bin_utils.ao_bin_data import AoBinData
-import ao_bin_utils.ao_bin_tools as aot
-
-from ao_bin_utils.my_thread import (
-    MyThread, work_queue, queue_lock, set_exit_flag
-)
 
 
 def list_efficient_items(request, id=None, market: str = None):
@@ -246,3 +248,49 @@ def efficient_items_process(equipment_set, location: str):
             equipment_set.character,
             equipment_set.id,
             failed_item_indexes)
+
+
+@csrf_exempt
+def excluded_item_list(request):
+    """List all excluded items, or create a new excluded item."""
+
+    if request.method == 'GET':
+        items = ExcludedItem.objects.all()
+        serializer = ExcludedItemSerializer(items, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = ExcludedItemSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+
+        return JsonResponse(serializer.errors, status=400)
+
+
+@csrf_exempt
+def excluded_item_detail(request, pk):
+    """Retrieve, update, or delete an excluded item."""
+
+    try:
+        item = ExcludedItem.objects.get(pk=pk)
+    except ExcludedItem.DoesNotExist:
+        return HttpResponse(status=404)
+
+    if request.method == 'GET':
+        serializer = ExcludedItemSerializer(item)
+        return JsonResponse(serializer.data)
+
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)
+        serializer = ExcludedItemSerializer(item, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data)
+
+        return JsonResponse(serializer.errors, status=400)
+
+    elif request.method == 'DELETE':
+        item.delete()
+        return HttpResponse(status=204)

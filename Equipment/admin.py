@@ -43,3 +43,8 @@ class EfficientItemResultAdmin(admin.ModelAdmin):
 @admin.register(Market)
 class MarketAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(ExcludedItem)
+class ExcludedItemAdmin(admin.ModelAdmin):
+    readonly_fields = ['time_saved']

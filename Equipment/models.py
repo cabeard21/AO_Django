@@ -120,3 +120,24 @@ class EfficientItemResult(models.Model):
 # Market Location
 class Market(models.Model):
     market = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.market
+
+
+# Item Exclusion
+class ExcludedItem(models.Model):
+    item_name = models.CharField(max_length=50)
+    tier = models.CharField(max_length=3)
+    quality = models.CharField(max_length=15)
+    price = models.CharField(max_length=50)
+
+    time_saved = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.item_name} ({self.tier}) ({self.quality}) ({self.price})"
+
+    def get_age(self):
+        now = datetime.datetime.utcnow().replace(tzinfo=utc)
+        time_diff = now - self.time_saved
+        return time_diff

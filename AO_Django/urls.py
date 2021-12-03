@@ -28,4 +28,6 @@ urlpatterns = [
          name='list_efficient_items_market'),
     path('efficient/<int:id>/<str:market>', eq.list_efficient_items,
          name='list_efficient_items_individual'),
+    path('excluded_items/', eq.excluded_item_list),
+    path('excluded_items/<int:pk>/', eq.excluded_item_detail)
 ]
