@@ -20,7 +20,7 @@ def list_efficient_items(request, id=None, market: str = None):
 
     market_changed = SaveMarket(market)
 
-    equipment_sets = EquipmentSet.objects.all()
+    equipment_sets: list[EquipmentSet] = EquipmentSet.objects.all()
 
     equipment_set_list = []
     equipment_set_names = []
@@ -31,7 +31,7 @@ def list_efficient_items(request, id=None, market: str = None):
     # Check for set in cache
     equipment_sets_evaluated = []
     for equipment_set in equipment_sets:
-        if id and equipment_set.id == id or market_changed:
+        if id and equipment_set.id == id:
             # Force refresh
             eval_current_set = True
         else:
@@ -40,14 +40,31 @@ def list_efficient_items(request, id=None, market: str = None):
         if not eval_current_set:
             result = LoadEfficientItemResult(equipment_set)
             # Only refresh if older than given minutes
-            if result and result[1].seconds/60 < 60:
+            if result:
                 equipment_set_list.append(result[0][0])
                 equipment_set_names.append(result[0][1])
                 equipment_set_costs.append(result[0][2])
                 equipment_set_chars.append(result[0][3])
                 equipment_set_ids.append(equipment_set.id)
             else:
-                eval_current_set = True
+                # Create a placeholder
+                efficient_set = {
+                    'item_names': [],
+                    'qualities': [],
+                    'item_powers': [],
+                    'prices': [],
+                }
+                for item in equipment_set.get_items():
+                    efficient_set['item_names'].append(item)
+                    efficient_set['qualities'].append('TBD')
+                    efficient_set['item_powers'].append('TBD')
+                    efficient_set['prices'].append('TBD')
+
+                equipment_set_list.append(efficient_set)
+                equipment_set_names.append(equipment_set.set_name)
+                equipment_set_costs.append('TBD')
+                equipment_set_chars.append(equipment_set.character)
+                equipment_set_ids.append(equipment_set.id)
 
         if eval_current_set:
             equipment_sets_evaluated.append(equipment_set)
