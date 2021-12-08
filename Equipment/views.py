@@ -10,7 +10,7 @@ from ao_bin_utils.my_thread import (
 )
 
 
-def list_efficient_items(request, id=None, market: str = None):
+def list_efficient_items(request, id=None, market: str = None, min_ip: str = None):
 
     if not market:
         try:
@@ -31,7 +31,7 @@ def list_efficient_items(request, id=None, market: str = None):
     # Check for set in cache
     equipment_sets_evaluated = []
     for equipment_set in equipment_sets:
-        if id and equipment_set.id == id:
+        if id and equipment_set.id == int(id):
             # Force refresh
             eval_current_set = True
         else:
@@ -39,7 +39,6 @@ def list_efficient_items(request, id=None, market: str = None):
 
         if not eval_current_set:
             result = LoadEfficientItemResult(equipment_set)
-            # Only refresh if older than given minutes
             if result:
                 equipment_set_list.append(result[0][0])
                 equipment_set_names.append(result[0][1])
@@ -78,7 +77,9 @@ def list_efficient_items(request, id=None, market: str = None):
         for i in range(len(equipment_sets_evaluated)):
             thread = MyThread(
                 lambda x: efficient_items_process(
-                    x, market), work_queue, result_list
+                    x, market, min_ip),
+                work_queue,
+                result_list
             )
             thread.start()
             threads.append(thread)
@@ -195,10 +196,18 @@ def SaveEfficientItemResult(result):
     eir.save()
 
 
-def efficient_items_process(equipment_set, location: str):
+def efficient_items_process(equipment_set: EquipmentSet, location: str, min_ip: int):
     # Get input variables
     abd = AoBinData()
-    target_ip = equipment_set.get_target_ips()
+    if min_ip is None:
+        target_ip = equipment_set.get_target_ips()
+    else:
+        # Replace all none -1, 0, 1 ip's w/ min_ip
+        target_ip = [
+            x if x in (-1, 0, 1) else int(min_ip)
+            for x in equipment_set.get_target_ips()
+        ]
+
     item_list = list(map(lambda x: abd.get_unique_name(x),
                      equipment_set.get_items()))
     mastery = equipment_set.get_mastery()
@@ -228,7 +237,10 @@ def efficient_items_process(equipment_set, location: str):
         efficient_set['qualities'].append(quality)
         efficient_set['item_powers'].append(ip)
         efficient_set['prices'].append(price)
-        target_ip.append(tar_ip)
+        target_ip.append(
+            tar_ip if min_ip is None else
+            int(min_ip) if tar_ip not in (-1, 0, 1) else tar_ip
+        )
 
     # Find failed items
     failed_item_indexes = []

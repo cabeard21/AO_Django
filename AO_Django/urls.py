@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 
 from AO_Django import views as ao
 from Equipment import views as eq
@@ -24,8 +24,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('efficient/', eq.list_efficient_items,
          name='list_efficient_items'),
-    path('efficient/<str:market>', eq.list_efficient_items,
+    path('efficient/<str:market>/', eq.list_efficient_items,
          name='list_efficient_items_market'),
-    path('efficient/<int:id>/<str:market>', eq.list_efficient_items,
+    path('efficient/<int:id>/<str:market>/', eq.list_efficient_items,
          name='list_efficient_items_individual'),
+    re_path(r'^efficient/(?P<id>\d+)/(?P<market>\w+)/(?P<min_ip>[ \-\d]+)/$', eq.list_efficient_items,
+            name='list_efficient_items_individual_min_ip'),
 ]

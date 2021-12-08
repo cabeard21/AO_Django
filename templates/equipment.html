@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% load index %}
+{% load static %}
 
 {% block navbar_content %}
 <li class="nav-item dropdown">
@@ -20,7 +21,7 @@
 
 {% block content %}
 
-<div class="row">
+<div class="row" id="vue-app">
     <div class="col">
         <div class="card-group flex-column">  
             {% for equipment_set in equipment_set_list %}
@@ -38,10 +39,11 @@
                                 <li class="list-group-item border-0"><span>{{ equipment_set_costs|index:forloop.counter0 }}</span></li>
                             </ul>
                         </div>
+                        <div class="col m-auto">
+                            <input class="form-control form-control-sm w-25 ml-auto" type="text" placeholder="IP" id="{{ forloop.counter0 }}_min_ip">
+                        </div>
                         <div class="col-auto m-auto">
-                            <a href="{% url 'list_efficient_items_individual' id=equipment_set_ids|index:forloop.counter0 market=market%}">
-                                <button type="button" class="btn btn-info">Refresh</button>
-                            </a>
+                            <button type="button" class="btn btn-info" v-on:click="refresh({{ forloop.counter0 }})">Refresh</button>
                         </div>
                     </div>
                 </div>
@@ -77,6 +79,7 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="{% static 'assets/vue/js/vue.js' %}"></script>
 
 <script>
     $(document).ready(function() {
@@ -84,6 +87,22 @@
             $('#loading_modal').modal('show');
         }
     });
+</script>
+
+{{ equipment_set_ids|json_script:"es_ids" }}
+<script type="text/javascript">
+    let app = new Vue({
+        el: "#vue-app",
+        delimiters: ['[[', ']]'],
+        methods: {
+            refresh: function (id) {
+                const es_ids = JSON.parse(document.getElementById('es_ids').textContent);
+                let ip = document.getElementById(id + "_min_ip").value;
+                let temp_location = "/efficient/" + es_ids[id] + "/{{ market }}/";
+                window.location = (ip === '' ? temp_location : temp_location + ip + "/");
+            }
+        }
+    })
 </script>
 
 {% endblock %}
