@@ -28,6 +28,6 @@ urlpatterns = [
          name='list_efficient_items_market'),
     path('efficient/<int:id>/<str:market>/', eq.list_efficient_items,
          name='list_efficient_items_individual'),
-    re_path(r'^efficient/(?P<id>\d+)/(?P<market>\w+)/(?P<min_ip>[ \-\d]+)/$', eq.list_efficient_items,
+    re_path(r'^efficient/(?P<id>\d+)/(?P<market>[ \w]+)/(?P<min_ip>[ \-\d]+)/$', eq.list_efficient_items,
             name='list_efficient_items_individual_min_ip'),
 ]
