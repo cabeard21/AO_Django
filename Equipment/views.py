@@ -10,6 +10,15 @@ from ao_bin_utils.my_thread import (
 )
 
 
+portal_markets = {
+    'Lymhurst': "Lymhurst Portal",
+    'Thetford': "Thetford Portal",
+    'Bridgewatch': "Bridgewatch Portal",
+    "Fort Sterling": "Fort Sterling Portal",
+    'Martlock': "Martlock Portal",
+}
+
+
 def list_efficient_items(request, id=None, market: str = None, min_ip: str = None):
 
     if not market:
@@ -75,9 +84,11 @@ def list_efficient_items(request, id=None, market: str = None, min_ip: str = Non
         threads = []
         result_list = []
         for i in range(len(equipment_sets_evaluated)):
+            market_portal = portal_markets.get(market, None)
+            market_name = f"{market}, {market_portal}" if market_portal else market
             thread = MyThread(
                 lambda x: efficient_items_process(
-                    x, market, min_ip),
+                    x, market_name, min_ip),
                 work_queue,
                 result_list
             )
