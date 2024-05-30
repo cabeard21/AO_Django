@@ -244,10 +244,7 @@ def efficient_items_process(equipment_set: EquipmentSet, location: str, min_ip: 
         efficient_set['qualities'].append(quality)
         efficient_set['item_powers'].append(ip)
         efficient_set['prices'].append(price)
-        target_ip.append(
-            tar_ip if min_ip is None else
-            int(min_ip) if tar_ip not in (-1, 0, 1) else tar_ip
-        )
+        target_ip.append(tar_ip if min_ip is None else int(min_ip))
 
     # Find failed items
     failed_item_indexes = []
