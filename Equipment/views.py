@@ -213,7 +213,7 @@ def efficient_items_process(equipment_set: EquipmentSet, location: str, min_ip: 
     if min_ip is None:
         target_ip = equipment_set.get_target_ips()
     else:
-        target_ip = int(min_ip)
+        target_ip = [int(min_ip)] * len(equipment_set.get_items())
 
     item_list = list(map(lambda x: abd.get_unique_name(x),
                      equipment_set.get_items()))
