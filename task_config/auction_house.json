@@ -1,0 +1,197 @@
+{
+    "tasks": {
+        "success_sound": {
+            "task_group": "play_sound",
+            "params": {
+                "sound_path": "task_templates/star.mp3"
+            }
+        },
+        "use_all_screens": {
+            "task_group": "configure_screenshots",
+            "params": {
+                "use_all_screens": true
+            }
+        },
+        "use_main_screen": {
+            "task_group": "configure_screenshots",
+            "params": {
+                "use_all_screens": false
+            }
+        },
+        "get_item_names": {
+            "task_group": "extract_and_ocr",
+            "params": {
+                "template": "task_templates/ITEM_NAMES.PNG",
+                "offset_x": 280,
+                "offset_y": 0,
+                "width": 820,
+                "height": 30,
+                "data_storage_key": "item_names",
+                "confidence": 0.9,
+                "display_roi": false
+            }
+        },
+        "click_ah_search": {
+            "task_group": "click",
+            "params": {
+                "gui_interaction_template": "task_templates/AH_SEARCH.PNG",
+                "gui_interaction_confidence": 0.9
+            }
+        },
+        "reset_ah": {
+            "task_group": "click",
+            "params": {
+                "gui_interaction_template": "task_templates/RESET.PNG",
+                "gui_interaction_confidence": 0.9
+            }
+        },
+        "backspace": {
+            "task_group": "keyboard",
+            "params": {
+                "keybind": "backspace"
+            }
+        },
+        "type_next_item": {
+            "task_group": "pop_and_type",
+            "params": {
+                "data_storage_key": "item_names"
+            }
+        },
+        "tier_.1": {
+            "task_group": "type_with_keyboard",
+            "params": {
+                "text_to_type": ".1",
+                "pause_duration": 2
+            }
+        },
+        "tier_.2": {
+            "task_group": "type_with_keyboard",
+            "params": {
+                "text_to_type": ".2",
+                "pause_duration": 2
+            }
+        },
+        "tier_.3": {
+            "task_group": "type_with_keyboard",
+            "params": {
+                "text_to_type": ".3",
+                "pause_duration": 2
+            }
+        },
+        "tier_4": {
+            "task_group": "type_with_keyboard",
+            "params": {
+                "text_to_type": " 4",
+                "pause_duration": 2
+            }
+        },
+        "tier_5": {
+            "task_group": "type_with_keyboard",
+            "params": {
+                "text_to_type": " 5",
+                "pause_duration": 2
+            }
+        },
+        "tier_6": {
+            "task_group": "type_with_keyboard",
+            "params": {
+                "text_to_type": " 6",
+                "pause_duration": 2
+            }
+        },
+        "tier_7": {
+            "task_group": "type_with_keyboard",
+            "params": {
+                "text_to_type": " 7",
+                "pause_duration": 2
+            }
+        },
+        "tier_8": {
+            "task_group": "type_with_keyboard",
+            "params": {
+                "text_to_type": " 8",
+                "pause_duration": 2
+            }
+        }
+    },
+    "options": {
+        "keybinds": {
+            "f5": "tasks1",
+            "f6": "tasks2",
+            "f7": "quit"
+        },
+        "ocr_function": "easyocr",
+        "startup_tasks": [
+            "success_sound"
+        ]
+    },
+    "task_groups": {
+        "tasks1": [
+            "use_all_screens",
+            "get_item_names",
+            "use_main_screen",
+            "success_sound"
+        ],
+        "tasks2": [
+            "reset_ah",
+            "click_ah_search",
+            "type_next_item",
+            "tier_4",
+            "tier_.1",
+            "backspace",
+            "backspace",
+            "tier_.2",
+            "backspace",
+            "backspace",
+            "tier_.3",
+            "backspace",
+            "backspace",
+            "backspace",
+            "backspace",
+            "tier_5",
+            "tier_.1",
+            "backspace",
+            "backspace",
+            "tier_.2",
+            "backspace",
+            "backspace",
+            "tier_.3",
+            "backspace",
+            "backspace",
+            "backspace",
+            "backspace",
+            "tier_6",
+            "tier_.1",
+            "backspace",
+            "backspace",
+            "tier_.2",
+            "backspace",
+            "backspace",
+            "tier_.3",
+            "backspace",
+            "backspace",
+            "backspace",
+            "backspace",
+            "tier_7",
+            "tier_.1",
+            "backspace",
+            "backspace",
+            "tier_.2",
+            "backspace",
+            "backspace",
+            "tier_.3",
+            "backspace",
+            "backspace",
+            "backspace",
+            "backspace",
+            "tier_8",
+            "tier_.1",
+            "backspace",
+            "backspace",
+            "tier_.2",
+            "backspace",
+            "backspace",
+            "tier_.3"
+        ]
+    }
+}

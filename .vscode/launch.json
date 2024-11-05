@@ -3,7 +3,8 @@
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
-    "configurations": [{
+    "configurations": [
+        {
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
@@ -17,9 +18,17 @@
             "program": "${workspaceFolder}\\manage.py",
             "args": [
                 "runserver",
-                "192.168.68.115:80"
+                "0.0.0.0:8080"
             ],
             "django": true
+        },
+        {
+            "name": "Python: Tasks",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}\\tasks.py",
+            "console": "integratedTerminal",
+            "justMyCode": false
         }
     ]
 }
