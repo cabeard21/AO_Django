@@ -1,15 +1,15 @@
 from django.db import models
 from django.db.models import F
-import datetime
-from django.utils.timezone import utc
+from django.utils import timezone
 
 
 class EquipmentSet(models.Model):
 
     set_name = models.CharField(max_length=100, unique=True)
-    items = models.ManyToManyField('ItemTier')
+    items = models.ManyToManyField("ItemTier")
     character = models.ForeignKey(
-        'Character', on_delete=models.DO_NOTHING, null=True, blank=True)
+        "Character", on_delete=models.DO_NOTHING, null=True, blank=True
+    )
 
     def __str__(self):
         return self.set_name
@@ -36,12 +36,13 @@ class EquipmentSet(models.Model):
 
 class ItemTier(models.Model):
     item = models.ForeignKey(
-        'Item', on_delete=models.DO_NOTHING, related_name='itemtier_item')
-    min_tier = models.IntegerField(default=4, verbose_name='Minimum Tier')
+        "Item", on_delete=models.DO_NOTHING, related_name="itemtier_item"
+    )
+    min_tier = models.IntegerField(default=4, verbose_name="Minimum Tier")
     target_ip = models.IntegerField(
         default=0,
-        verbose_name='Target IP',
-        help_text='Positive for cheapest, negative for highest IP/Cost'
+        verbose_name="Target IP",
+        help_text="Positive for cheapest, negative for highest IP/Cost",
     )
 
     def __str__(self):
@@ -56,7 +57,8 @@ class Item(models.Model):
 
     item_name = models.CharField(max_length=50)
     item_type = models.ForeignKey(
-        'ItemType', on_delete=models.DO_NOTHING, related_name='item_itemtype')
+        "ItemType", on_delete=models.DO_NOTHING, related_name="item_itemtype"
+    )
 
     def __str__(self):
         return self.item_name
@@ -65,7 +67,7 @@ class Item(models.Model):
 class Character(models.Model):
 
     char_name = models.CharField(max_length=100, unique=True)
-    mastery = models.ManyToManyField('ItemSpec', blank=True)
+    mastery = models.ManyToManyField("ItemSpec", blank=True)
 
     def __str__(self):
         return self.char_name
@@ -83,7 +85,8 @@ class Character(models.Model):
 class ItemSpec(models.Model):
 
     item = models.ForeignKey(
-        'Item', on_delete=models.DO_NOTHING, related_name='itemspec_item')
+        "Item", on_delete=models.DO_NOTHING, related_name="itemspec_item"
+    )
     spec_bonus = models.IntegerField(default=0)
 
     def __str__(self):
@@ -112,7 +115,7 @@ class EfficientItemResult(models.Model):
     time_saved = models.DateTimeField(auto_now=True)
 
     def get_age(self):
-        now = datetime.datetime.utcnow().replace(tzinfo=utc)
+        now = timezone.now()
         time_diff = now - self.time_saved
         return time_diff
 
